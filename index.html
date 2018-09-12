@@ -10,54 +10,129 @@
 <body>
   <header></header>
   <main>
+    <!-- <kbd class="key">A</kbd> -->
     <div class="wrapper" id="mainxxx">
 
     </div>
   </main>
   <footer></footer>
   <script>
-    var keys = {
-      '0': ['q','w','e','r','t','y','u','i','o','p'],
-      '1': ['a','s','d','f','g','h','j','k','l'],
-      '2': ['z','x','c','v','b','n','m'],
-      'length': 3
+    //1.初始化数据
+    var hashA = init()
+    var keys = hashA['keys']
+    var hash = hashA['hash']
+          
+    //2.生成键盘
+    generateKeyboard(hash,keys)
+        
+    //3.监听键盘
+    listenToUser(hash)
+
+    //工具函数
+    function init(){
+      var keys = {
+        '0': ['q','w','e','r','t','y','u','i','o','p'],
+        '1': ['a','s','d','f','g','h','j','k','l'],
+        '2': ['z','x','c','v','b','n','m'],
+        'length': 3
+      }
+      var hash = {
+          'q': 'qq.com', 'w': 'weibo.com','t': 'taobao.com','i': 'iqiyi.com','a': 'amazon.cn','d': 'douban.com',
+          'x': 'xunlei.com', 'm': 'meituan.com'
+      }
+
+      //取出 LoaclStorage 中的 zzz 对应的 hash
+      var hashInLoaclStorage = getFromLocalStorage('zzz')
+      if(hashInLoaclStorage){
+        hash = hashInLoaclStorage
+      }
+      return{
+        "keys": keys,
+        "hash": hash
+      }
+
     }
-    var hash = {
-      'q': 'qq.com', 'w': 'weibo.com','t': 'taobao.com','i': 'iqiyi.com','a': 'amazon.cn','d': 'douban.com',
-      'j': 'jd.com', 'x': 'xunlei.com', 'm': 'meituan.com'
+
+    function generateKeyboard(hash,keys){
+      for(var index=0; index < keys['length']; index = index+1 ){
+        var div1 = tag('div')
+        div1.className = 'row'
+
+        mainxxx.appendChild(div1)
+
+        var row = keys[index]
+        for(var index2=0; index2 < row['length']; index2 = index2+1 ){
+          var span = createSpan(row[index2])
+          
+          var buttonx = createButton(row[index2])
+
+          var imgxxx = createImg(hash[row[index2]])
+          
+          var z = tag('kbd')
+          z.className = 'key'
+
+          z.appendChild(span)
+          z.appendChild(buttonx)
+          z.appendChild(imgxxx)
+
+          div1.appendChild(z)
+        }
+      }
     }
-    hashInLoaclStorage = JSON.parse(localStorage.getItem('zzz')) || 'null'
-    if(hashInLoaclStorage){
-      hash = hashInLoaclStorage
+
+    function listenToUser(hash){
+      document.onkeypress = function(zxcvbnm){
+        var key = zxcvbnm['key']
+        var website = hash[key]
+        window.open('http://'+website,'_blank')
+      }
     }
-    index = 0
-    while(index < keys['length']){
-      div1 = document.createElement('div')
-      mainxxx.appendChild(div1)
-      index2 = 0
-      row = keys[index]
-      while(index2 < row['length']){
-        z = document.createElement('kbd')
-        z.textContent = row[index2]
-        buttonx = document.createElement('button')
+
+    function getFromLocalStorage(name){
+      return JSON.parse(localStorage.getItem(name) || 'null')
+    }
+
+    function tag(tagName){
+      return document.createElement(tagName)
+    }
+
+    function createSpan(textContent){
+      var span = tag('span')
+      span.textContent = textContent
+      span.className = 'text'
+      return span
+    }
+
+    function createButton(id){
+      var buttonx = tag('button')
         buttonx.textContent = '编辑'
-        buttonx.id = row[index2]
+        buttonx.id = id
         buttonx.onclick = function(zxcvbnm){
-          key = zxcvbnm.target.id
-          XXX = prompt('请输入网址')
+          var button3 = zxcvbnm['target']
+          var img2 = button3.nextSibling
+          var key = button3['id']
+          var XXX = prompt('请输入网址')
           hash[key] = XXX
+          img2.src = 'http://'+XXX+'/favicon.ico'
+          img2.onerror = function(xxxxx){
+            xxxxx.target.src='//i.loli.net/2018/09/11/5b97c71b571f5.png'
+          }
           localStorage.setItem('zzz',JSON.stringify(hash))
         }
-        z.appendChild(buttonx)
-        div1.appendChild(z)
-        index2 = index2+1 
-      }
-      index = index+1
+      return buttonx
     }
-    document.onkeypress = function(zxcvbnm){
-      key = zxcvbnm['key']
-      website = hash[key]
-      window.open('http://'+website,'_blank')
+
+    function createImg(domain){
+      var imgxxx = tag('img')
+        if(domain){
+          imgxxx.src = 'http://'+domain+'/favicon.ico'
+        }else{
+          imgxxx.src = '//i.loli.net/2018/09/11/5b97c71b571f5.png'
+        }
+        imgxxx.onerror = function(xxxxx){
+          xxxxx.target.src='//i.loli.net/2018/09/11/5b97c71b571f5.png'
+        }
+      return imgxxx
     }
       
   </script>
